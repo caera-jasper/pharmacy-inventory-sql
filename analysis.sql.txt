@@ -39,6 +39,5 @@ SELECT
 FROM inventory i 
 JOIN medications m ON i.med_id = m.med_id
 JOIN purchase_orders po ON m.med_id = po.med_id
-JOIN suppliers s ON po.supplier_id = s.supplier
-_id
+JOIN suppliers s ON po.supplier_id = s.supplier_id
 WHERE i.stock_on_hand <= i.reorder_point AND po.status = 'Pending';
