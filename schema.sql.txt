@@ -1,0 +1,60 @@
+-- 1. create tables
+CREATE TABLE medications (
+	med_id INT PRIMARY KEY,
+	drug_name VARCHAR(100),
+	category VARCHAR(50),
+	unit_cost DECIMAL (10,2)
+);
+
+
+CREATE TABLE suppliers (
+	supplier_id INT PRIMARY KEY,
+	supplier_name VARCHAR(100),
+	lead_time_days INT
+);
+
+CREATE TABLE inventory (
+	inventory_id INT PRIMARY KEY,
+	med_id INT,
+	stock_on_hand INT,
+	reorder_point INT,
+	expiration_date DATE,
+	FOREIGN KEY (med_id) REFERENCES medications(med_id)
+);
+
+CREATE TABLE purchase_orders (
+	po_id INT PRIMARY KEY,
+	med_id INT,
+	supplier_id INT,
+	order_date DATE,
+	status VARCHAR(20),
+	FOREIGN KEY (med_id) REFERENCES medications(med_id),
+	FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+);
+
+-- 2. populate data
+
+INSERT INTO medications VALUES 
+(101, 'Amoxicillin 50mg', 'Antibiotic', 12.50),
+(102, 'Lisinopril 10mg', 'Cardiovascular', 8.00),
+(103, 'Atorvastatin 20mg', 'Cardiovascular', 15.00),
+(104, 'Albuterol Inhaler', 'Respiratory', 45.00),
+(105, 'Metformin 1000mg', 'Endocrine', 6.50);
+
+INSERT INTO suppliers VALUES 
+(1, 'McKesson Health', 2),
+(2, 'AmerisourceBergen', 5),
+(3, 'Cardinal Health', 3);
+
+INSERT INTO inventory VALUES
+(1, 101, 15, 50, '2026-10-15'),
+(2, 102, 120, 40, '2026-09-20'),
+(3, 103, 5, 30, '2027-05-01'),
+(4, 104, 80, 25, '2027-01-10'),
+(5, 105, 10, 60, '2026-08-28');
+
+INSERT INTO purchase_orders VALUES
+(501, 101, 1, '2026-09-01', 'Pending'),
+(502, 103, 2, '2026-09-03', 'Pending'),
+(503, 105, 3, '2026-08-28', 'Delivered');
+

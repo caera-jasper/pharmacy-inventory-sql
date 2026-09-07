@@ -1,0 +1,44 @@
+-- QUERY 1: INVENTORY STATUS CATEGORIZATION
+
+SELECT 
+	m.drug_name,
+	m. category,
+	i.stock_on_hand,
+	i.reorder_point,
+	CASE 
+		WHEN i.stock_on_hand = 0 THEN 'OUT OF STOCK'
+		WHEN i.stock_on_hand <= (i.reorder_point * 0.25) THEN 'CRITICAL LOW'
+		WHEN i.stock_on_hand <= i.reorder_point THEN 'REORDER NEEDED'
+		ELSE 'HEALTHY'
+	END AS stock_status
+FROM inventory i 
+JOIN medications m ON i.med_id = m.med_id
+ORDER BY i.stock_on_hand ASC;
+
+-- QUERY 2: EXPIRATION RISK EXPOSURE 
+
+SELECT 
+	m.drug_name,
+	i.stock_on_hand,
+	m.unit_cost,
+	(i.stock_on_hand * m.unit_cost) AS total_value_at_risk,
+	i.expiration_date
+FROM inventory i 
+JOIN medications m ON i.med_id = m.med_id
+WHERE i.expiration_date <= '2026-10-01'
+ORDER BY i.expiration_date ASC;
+
+-- QUERY 3: VENDOR SUPPLY DELAY AND PENDING ORDERS 
+
+SELECT
+	m.drug_name,
+	i.stock_on_hand,
+	po.status AS order_status,
+	s.supplier_name,
+	s.lead_time_days
+FROM inventory i 
+JOIN medications m ON i.med_id = m.med_id
+JOIN purchase_orders po ON m.med_id = po.med_id
+JOIN suppliers s ON po.supplier_id = s.supplier
+_id
+WHERE i.stock_on_hand <= i.reorder_point AND po.status = 'Pending';
